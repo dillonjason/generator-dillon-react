@@ -1,0 +1,9 @@
+{
+  "generator-node": {
+    "promptValues": {
+      "authorName": "Dillon Jason",
+      "authorEmail": "djasuar@gmail.com",
+      "authorUrl": "www.dillonjason.net"
+    }
+  }
+}
