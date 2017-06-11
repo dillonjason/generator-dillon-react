@@ -1,9 +1,15 @@
-# generator-dillon-react [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url]
-> 
+# generator-dillon-react
+> Yeoman generator for the pdf team
 
 ## Installation
 
-First, install [Yeoman](http://yeoman.io) and generator-dillon-react using [npm](https://www.npmjs.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)).
+First, make sure you have the internal npm registery global.
+
+```bash
+npm config set registry http://build.learnvest.net:8081/nexus/content/groups/npm-all/
+```
+
+Then install [Yeoman](http://yeoman.io) and generator-dillon-react using [npm](https://www.npmjs.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)).
 
 ```bash
 npm install -g yo
@@ -25,12 +31,12 @@ yo dillon-react
 
 ## License
 
-MIT © [Dillon Jason](www.dillonjason.net)
+MIT © [Dillon Jason]()
 
 
 [npm-image]: https://badge.fury.io/js/generator-dillon-react.svg
 [npm-url]: https://npmjs.org/package/generator-dillon-react
-[travis-image]: https://travis-ci.org/djasuar/generator-dillon-react.svg?branch=master
-[travis-url]: https://travis-ci.org/djasuar/generator-dillon-react
-[daviddm-image]: https://david-dm.org/djasuar/generator-dillon-react.svg?theme=shields.io
-[daviddm-url]: https://david-dm.org/djasuar/generator-dillon-react
+[travis-image]: https://travis-ci.org/LearnVest/generator-dillon-react.svg?branch=master
+[travis-url]: https://travis-ci.org/LearnVest/generator-dillon-react
+[daviddm-image]: https://david-dm.org/LearnVest/generator-dillon-react.svg?theme=shields.io
+[daviddm-url]: https://david-dm.org/LearnVest/generator-dillon-react

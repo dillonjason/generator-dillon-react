@@ -1,12 +1,12 @@
 {
   "name": "generator-dillon-react",
-  "version": "0.0.0",
-  "description": "",
+  "version": "0.0.3",
+  "description": "Yeoman generator for the pdf team",
   "homepage": "",
   "author": {
     "name": "Dillon Jason",
-    "email": "djasuar@gmail.com",
-    "url": "www.dillonjason.net"
+    "email": "djason@learnvest.com",
+    "url": ""
   },
   "files": [
     "generators"
@@ -17,26 +17,37 @@
     "yeoman-generator"
   ],
   "devDependencies": {
-    "yeoman-test": "^1.6.0",
-    "yeoman-assert": "^3.0.0",
+    "eslint": "3.19.0",
+    "eslint-config-standard": "10.2.1",
+    "eslint-config-standard-react": "5.0.0",
+    "eslint-plugin-import": "^2.3.0",
+    "eslint-plugin-node": "^5.0.0",
+    "eslint-plugin-promise": "3.5.0",
+    "eslint-plugin-react": "7.0.1",
+    "eslint-plugin-standard": "3.0.1",
+    "jest": "^20.0.4",
+    "jest-cli": "^20.0.4",
+    "module-npm-release-wrapper": "^2.0.1",
     "nsp": "^2.6.3",
-    "eslint": "^3.18.0",
-    "eslint-config-xo-space": "^0.16.0",
-    "jest": "^19.0.2",
-    "jest-cli": "^20.0.0"
+    "yeoman-assert": "^3.0.0",
+    "yeoman-test": "^1.6.0"
   },
   "dependencies": {
     "yeoman-generator": "^1.0.0",
     "chalk": "^1.1.3",
-    "yosay": "^2.0.0"
+    "yosay": "^2.0.0",
+    "ast-query": "^2.0.0"
   },
   "jest": {
     "testEnvironment": "node"
   },
   "scripts": {
     "prepublish": "nsp check",
+    "lint": "eslint --ext .jsx,.js --no-ignore ./generators/**/src/**",
+    "lint:fix": "eslint --ext .jsx,.js --fix --no-ignore ./generators/**/src/**",
     "pretest": "eslint . --fix",
-    "test": "jest"
+    "test": "jest",
+    "deploy": "node ./node_modules/module-npm-release-wrapper/scripts/deploy.js"
   },
   "eslintConfig": {
     "extends": "xo-space",
@@ -45,6 +56,6 @@
       "node": true
     }
   },
-  "repository": "git@github.com:dillonjason/generator-dillon-react.git",
+  "repository": "LearnVest/generator-dillon-react",
   "license": "MIT"
 }
