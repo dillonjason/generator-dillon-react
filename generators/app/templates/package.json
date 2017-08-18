@@ -69,7 +69,6 @@
     "moment": "2.18.1",
     "node-fetch": "1.7.1",
     "node-sass": "4.5.3",
-    "node-utils": "1.0.0",
     "nodemon": "1.11.0",
     "phantomjs-polyfill": "0.0.2",
     "phantomjs-prebuilt": "2.1.14",
@@ -84,7 +83,6 @@
     "sass-loader": "6.0.6",
     "sinon": "2.3.7",
     "style-loader": "0.18.2",
-    "ui-toolkit": "1.18.0",
     "webpack": "3.2.0",
     "winston": "2.3.1",
     "xunit-file": "1.0.0"
