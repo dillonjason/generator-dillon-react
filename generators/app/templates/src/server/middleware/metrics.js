@@ -1,4 +1,4 @@
-import logger from 'util/Logger'
+import logger from 'util/logger'
 import stats from 'util/stats'
 
 export default async function metricsMiddleware (ctx, next) {
