@@ -31,18 +31,6 @@ let webpackBase = {
       filename: 'index.html',
       inject: 'body'
     }),
-    new HtmlWebpackPlugin({
-      alwaysWriteToDisk: true,
-      template: 'src/server/html/error._TEMPLATE_.html',
-      filename: 'error.html',
-      inject: 'body'
-    }),
-    new HtmlWebpackPlugin({
-      alwaysWriteToDisk: true,
-      template: 'src/server/html/404._TEMPLATE_.html',
-      filename: '404.html',
-      inject: 'body'
-    }),
     new HtmlWebpackHarddiskPlugin()
   ],
   resolve: {

@@ -1,9 +1,2 @@
-// UI tooklit import
-$include-html-classes: true;
-$asset-build-path: '~ui-toolkit/src';
-
-@import '~ui-toolkit/src/scss/theme/_nm';
-@import '~ui-toolkit/src/scss/core';
-
 // App styles
 @import './shared/_base';
