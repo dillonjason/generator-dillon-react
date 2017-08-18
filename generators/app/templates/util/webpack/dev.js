@@ -1,23 +1,23 @@
+let webpackBase = require('./base')
+let webpackMerge = require('webpack-merge')
 
-var _ = require('lodash');
-var webpackBase = require('./base');
-
-var webpackDev = _.merge(webpackBase, {
+let webpackDev = webpackMerge(webpackBase, {
   devtool: 'eval-source-map',
   entry: {
-    app:[
+    app: [
       'webpack-hot-middleware/client',
       './src/client/js/app'
     ]
   },
-  cache: true
-});
-
-webpackDev.module.rules = _.union(webpackBase.module.rules, [
-  {
-    test: /\.scss$|\.sass|\.css$/,
-    loaders: ['style-loader', 'css-loader', 'sass-loader']
+  cache: true,
+  module: {
+    rules: [
+      {
+        test: /\.scss$|\.sass|\.css$/,
+        use: ['style-loader', 'css-loader', 'sass-loader']
+      }
+    ]
   }
-]);
+})
 
-module.exports = webpackDev;
+module.exports = webpackDev

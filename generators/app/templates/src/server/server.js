@@ -37,7 +37,7 @@ app
   .use(mount('/plan', serve(`${process.cwd()}/dist`, {
     cacheControl: `max-age=${365 * 24 * 60 * 60}, immutable`
   })))
-  .use(mount('<%= baseRoute %>>', serve(`${process.cwd()}/dist`)))
+  .use(mount('<%= baseRoute %>', serve(`${process.cwd()}/dist`)))
   .use(views(`${process.cwd()}/dist/assets/public/`, {
     map: {
       html: 'handlebars'

@@ -11,11 +11,10 @@ export class Request {
   constructor (options = {}) {
     const { headers = {}, cookies = '' } = options
 
-    // eslint-disable-next-line no-undef
-    let headersObj = new Headers(headers)
-    headersObj.append('Cookie', cookies)
+    _.set(headers, 'Cookie', cookies)
+
     this.options = {
-      headers: headersObj
+      headers
     }
   }
 
@@ -24,11 +23,10 @@ export class Request {
    * @param {Object} headers - The new headers
    */
   setHeaders (headers = {}) {
-    let cookies = this.options.headers.get('Cookie')
-    let headersObj = new Headers(headers) // eslint-disable-line no-undef
-    headersObj.append('Cookie', cookies)
+    let cookies = _.get(this.options.headers, 'Cookie', {})
+    _.set(headers, 'Cookie', cookies)
 
-    _.set(this.options, 'headers', headersObj)
+    this.options.headers = headers
   }
 
   /**
@@ -43,10 +41,11 @@ export class Request {
    * Make an http GET request
    * @param {String} uri - Request path
    * @param {Object} options - Request options, optional
+   * @param {Boolean} critical - Request is critical, optional
    * @returns {Promise}
    */
-  get (uri, options = {}) {
-    return this._makeRequest({ uri, options })
+  get ({uri, options = {}, critical}) {
+    return this._makeRequest({ uri, options, critical })
   }
 
   /**
@@ -54,12 +53,15 @@ export class Request {
    * @param {String} uri - Request path
    * @param {Object} data - Request body, optional
    * @param {Object} options - Request options, optional
+   * @param {Boolean} critical - Request is critical, optional
    * @returns {Promise}
    */
-  post (uri, data = {}, options = {}) {
-    _.set(options, 'body', data)
+  post ({uri, data = {}, options = {}, critical}) {
+    _.set(options, 'body', JSON.stringify(data))
     _.set(options, 'headers.content-length', Buffer.byteLength(JSON.stringify(data)))
-    return this._makeRequest({ uri, options, method: 'POST' })
+    _.set(options, 'headers.content-type', 'application/json')
+
+    return this._makeRequest({ uri, options, method: 'POST', critical })
   }
 
   /**
@@ -67,15 +69,33 @@ export class Request {
    * @param {String} uri - Request path
    * @param {Object} options - Request options, optional
    * @param {String} method - Request method, defaults to GET
+   * @param {Boolean} critical - Request is critical, optional
    * @returns {Promise}
    * @private
    */
-  _makeRequest ({ uri, options = {}, method = 'GET' }) {
+  _makeRequest ({ uri, options = {}, method = 'GET', critical = false }) {
     this._checkUri(uri)
     options = _.merge({}, this.options, options)
-    _.assignIn(options, { method })
+    options = _.merge({}, this.options, options)
+
+    // eslint-disable-next-line no-undef
+    let headers = new Headers(_.get(options, 'headers', {}))
+    _.assignIn(options, { method, headers })
 
     return fetch(uri, options)
+      .then((response) => {
+        if (!response.ok) {
+          if (critical) {
+            response.text()
+              .then((html) => {
+                document.body.innerHTML = html
+              })
+          }
+          throw Error(response.statusText)
+        } else {
+          return response
+        }
+      })
   }
 
   /**

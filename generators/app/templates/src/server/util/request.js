@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import fetch from 'node-fetch'
+import fetch, {Headers} from 'node-fetch'
 
 /* Class used to make http requests */
 export class Request {
@@ -12,11 +12,15 @@ export class Request {
   constructor (options = {}) {
     const { headers = {}, cookies = '' } = options
 
-    let headersObj = new Headers(headers)
-    headersObj.append('Cookie', cookies)
+    _.set(headers, 'Cookie', cookies)
+
     this.options = {
-      headers: headersObj
+      headers
     }
+  }
+
+  setLogger (logger) {
+    this.logger = logger
   }
 
   /**
@@ -24,11 +28,10 @@ export class Request {
    * @param {Object} headers - The new headers
    */
   setHeaders (headers = {}) {
-    let cookies = this.options.headers.get('Cookie')
-    let headersObj = new Headers(headers)
-    headersObj.append('Cookie', cookies)
+    let cookies = _.get(this.options.headers, 'Cookie', {})
+    _.set(headers, 'Cookie', cookies)
 
-    _.set(this.options, 'headers', headersObj)
+    this.options.headers = headers
   }
 
   /**
@@ -57,8 +60,12 @@ export class Request {
    * @returns {Promise}
    */
   post (uri, data = {}, options = {}) {
-    _.set(options, 'body', data)
-    _.set(options, 'headers.content-length', Buffer.byteLength(JSON.stringify(data)))
+    _.set(options, 'body', JSON.stringify(data))
+
+    if (!_.isEmpty(data)) {
+      _.set(options, 'headers.Content-Length', Buffer.byteLength(JSON.stringify(data)))
+    }
+
     return this._makeRequest({ uri, options, method: 'POST' })
   }
 
@@ -73,9 +80,35 @@ export class Request {
   _makeRequest ({ uri, options = {}, method = 'GET' }) {
     this._checkUri(uri)
     options = _.merge({}, this.options, options)
-    _.assignIn(options, { method })
+    let headers = new Headers(_.get(options, 'headers', {}))
+    _.assignIn(options, { method, headers })
+    let stack = new Error().stack
+
+    if (this.logger) {
+      this.logger.info(`API ${method} Request to ${uri}`)
+    }
 
     return fetch(uri, options)
+      .then((response) => {
+        if (!response.ok) {
+          let baseError = `API ${method} Request to ${response.url}\n\n${response.status}\n${response.statusText}`
+
+          if (response.json) {
+            return response.json()
+              .then((json) => {
+                let error = new Error(`${baseError}\n\n${_.get(json, 'message', '')}`)
+                error.stack = stack
+                throw error
+              })
+          } else {
+            let error = new Error(baseError)
+            error.stack = stack
+            throw error
+          }
+        } else {
+          return response
+        }
+      })
   }
 
   /**

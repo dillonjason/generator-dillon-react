@@ -1,19 +1,19 @@
-'use strict';
-const Generator = require('yeoman-generator');
-const chalk = require('chalk');
-const yosay = require('yosay');
+'use strict'
+const Generator = require('yeoman-generator')
+const chalk = require('chalk')
+const yosay = require('yosay')
 
 module.exports = class extends Generator {
   initializing() {
-    this.composeWith(require.resolve('../redux'));
-    this.composeWith(require.resolve('../docker'));
+    this.composeWith(require.resolve('../redux'))
+    this.composeWith(require.resolve('../docker'))
   }
 
-  prompting() {
+  prompting () {
     // Have Yeoman greet the user.
     this.log(yosay(
       'Welcome to the dazzling ' + chalk.red('generator-dillon-react') + ' generator!'
-    ));
+    ))
 
     const prompts = [
       {
@@ -37,34 +37,34 @@ module.exports = class extends Generator {
         default: '3000',
         save: true
       }
-    ];
+    ]
 
     return this.prompt(prompts).then(props => {
-      // To access props later use this.props.someAnswer;
-      this.props = props;
-    });
+      // To access props later use this.props.someAnswer
+      this.props = props
+    })
   }
 
-  writing() {
+  writing () {
     let context = {
       appName: this.props.appName,
       baseRoute: this.props.baseRoute,
       port: Number(this.props.port) || 3000
-    };
+    }
 
     this.fs.copyTpl(
       this.templatePath(),
       this.destinationPath(),
       context,
       null,
-      {globOptions: {dot: true}}
-    );
+      { globOptions: { dot: true } }
+    )
   }
 
-  install() {
+  install () {
     this.installDependencies({
       npm: true,
       bower: false
-    });
+    })
   }
-};
+}

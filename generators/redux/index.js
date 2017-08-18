@@ -1,8 +1,8 @@
-'use strict';
-const Generator = require('yeoman-generator');
+'use strict'
+const Generator = require('yeoman-generator')
 
 module.exports = class extends Generator {
-  prompting() {
+  prompting () {
     const prompts = [
       {
         type: 'confirm',
@@ -16,31 +16,31 @@ module.exports = class extends Generator {
         message: 'Do you need Redux-Saga?',
         when: function (answers) {
           // Only ask about saga if the user needs redux
-          return answers.useRedux;
+          return answers.useRedux
         },
         default: true
       }
-    ];
+    ]
 
     return this.prompt(prompts).then(props => {
       // To access props later use this.props.someAnswer;
-      this.props = props;
-    });
+      this.props = props
+    })
   }
 
-  writing() {
+  writing () {
     let context = {
       appName: this.config.get('appName'),
       baseRoute: this.config.get('baseRouter'),
       useSaga: this.props.useSaga
-    };
+    }
 
     if (this.props.useRedux) {
       this.fs.copyTpl(
         this.templatePath(),
         this.destinationPath(),
         context
-      );
+      )
     }
 
     if (this.props.useSaga) {
@@ -48,23 +48,23 @@ module.exports = class extends Generator {
         this.templatePath('src/client/js/.sagas'),
         this.destinationPath('src/client/js/sagas'),
         context
-      );
+      )
     }
   }
 
-  install() {
-    let packages = [];
+  install () {
+    let packages = []
     if (this.props.useRedux) {
-      packages.push('redux@3.5.2');
-      packages.push('react-redux@4.4.5');
+      packages.push('redux@3.7.1')
+      packages.push('react-redux@5.0.5')
     }
 
     if (this.props.useSaga) {
-      packages.push('redux-saga@0.15.3');
+      packages.push('redux-saga@0.15.4')
     }
 
     if (packages.length) {
-      this.npmInstall(packages, {save: true});
+      this.npmInstall(packages, {save: true})
     }
   }
-};
+}

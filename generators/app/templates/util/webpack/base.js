@@ -1,11 +1,11 @@
-var config = require('config');
-var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
+let config = require('config')
+let webpack = require('webpack')
+let HtmlWebpackPlugin = require('html-webpack-plugin')
+let HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin')
 
-var fileName = config.get('shouldHotReload') ? '[name].js' : '[name].[hash].js';
+let fileName = config.get('shouldHotReload') ? '[name].js' : '[name].[hash].js'
 
-var webpackBase = {
+let webpackBase = {
   entry: {
     vendors: [
       'lodash',
@@ -26,37 +26,62 @@ var webpackBase = {
     new HtmlWebpackPlugin({
       alwaysWriteToDisk: true,
       template: 'src/server/html/index._TEMPLATE_.html',
+      filename: 'index.html',
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      alwaysWriteToDisk: true,
+      template: 'src/server/html/error._TEMPLATE_.html',
+      filename: 'error.html',
+      inject: 'body'
+    }),
+    new HtmlWebpackPlugin({
+      alwaysWriteToDisk: true,
+      template: 'src/server/html/404._TEMPLATE_.html',
+      filename: '404.html',
       inject: 'body'
     }),
     new HtmlWebpackHarddiskPlugin()
   ],
   resolve: {
     extensions: ['.js', '.jsx', '.scss', '.css'],
-    modules: ['src/client/js', 'node_modules', 'src/client/sass']
+    modules: ['src/client/js', 'node_modules', 'src/client/sass'],
+    alias: {
+      product_style: process.cwd() + '/src/client/sass' + (process.env.PRODUCT_MODE === 'NM' ? '/app_nm.scss' : '/app_lv.scss')
+    }
   },
   module: {
     rules: [
       {
-        test: /\.woff([\?]?.*)$/,
-        loader: 'file-loader'
-      }, {
-        test: /\.woff2([\?]?.*)$/,
-        loader: 'file-loader'
-      }, {
-        test: /\.ttf([\?]?.*)$/,
-        loader: 'file-loader'
-      }, {
-        test: /\.eot([\?]?.*)$/,
-        loader: 'file-loader'
-      }, {
-        test: /\.json([\?]?.*)$/,
-        loader: 'json-loader'
-      }, {
+        test: /\.woff([?]?.*)$/,
+        use: 'file-loader'
+      },
+      {
+        test: /\.woff2([?]?.*)$/,
+        use: 'file-loader'
+      },
+      {
+        test: /\.ttf([?]?.*)$/,
+        use: 'file-loader'
+      },
+      {
+        test: /\.eot([?]?.*)$/,
+        use: 'file-loader'
+      },
+      {
+        test: /\.json([?]?.*)$/,
+        use: 'json-loader'
+      },
+      {
         test: /\.(png|jpg)$/,
-        loader: 'url-loader?limit=8192'
-      }, {
-        test: /\.svg([\?]?.*)$/,
-        loader: 'file-loader'
+        loader: 'url-loader',
+        options: {
+          limit: 8192
+        }
+      },
+      {
+        test: /\.svg([?]?.*)$/,
+        use: 'file-loader'
       },
       {
         test: /\.jsx?$/,
@@ -64,7 +89,7 @@ var webpackBase = {
         exclude: /node_modules/,
         options: {
           presets: [
-            [ 'es2015', { modules: false } ],
+            [ 'env', { modules: false } ],
             'react'
           ],
           env: {
@@ -80,9 +105,8 @@ var webpackBase = {
           }
         }
       }
-
     ]
   }
-};
+}
 
-module.exports = webpackBase;
+module.exports = webpackBase

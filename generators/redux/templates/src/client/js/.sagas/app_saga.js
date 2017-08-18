@@ -17,6 +17,6 @@ function * fetchMockData () {
   }
 }
 
-export function * getMockData () {
+export function * appSaga  () {
   yield takeEvery(ACTIONS.FETCH_INIT_DATA, fetchMockData)
 }

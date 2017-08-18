@@ -1,46 +1,63 @@
+let webpack = require('webpack')
+let path = require('path')
+let ExtractTextPlugin = require('extract-text-webpack-plugin')
+let webpackMerge = require('webpack-merge')
 
-var _ = require('lodash');
-var webpack = require('webpack');
-var path = require('path');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+let webpackBase = require('./base')
 
-var webpackBase = require('./base');
+let extractSass = new ExtractTextPlugin({
+  filename: '[name].[hash].css',
+  allChunks: false
+})
 
-var sassLoaders = [
-  'css-loader',
-  'autoprefixer-loader?browsers=last 2 version',
-  'sass-loader?sourceMap&' +
-  'includePaths[]=' + path.resolve(__dirname, './node_modules') +
-  '&includePaths[]=' + path.resolve(__dirname, './src/client/sass')
-];
-
-var webpackProd = _.merge(webpackBase, {
+let webpackProd = webpackMerge(webpackBase, {
   devtool: 'source-map',
   entry: {
     app: './src/client/js/app'
-  }
-});
+  },
+  module: {
+    rules: [
+      {
+        test: /\.scss$|\.sass|\.css$/,
+        use: extractSass.extract({
+          fallback: 'style-loader',
+          use: [
+            {
+              loader: 'css-loader'
+            },
+            {
+              loader: 'autoprefixer-loader',
+              options: {
+                browsers: 'last 2 version'
+              }
+            },
+            {
+              loader: 'sass-loader',
+              options: {
+                includePaths: [
+                  path.resolve(__dirname, './node_modules'),
+                  path.resolve(__dirname, './src/client/sass')
+                ]
+              }
+            }
+          ]
+        })
+      }
+    ]
+  },
+  plugins: [
+    extractSass,
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        warnings: true
+      }
+    }),
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': JSON.stringify('production')
+      }
+    })
+  ]
+})
 
-webpackProd.module.rules = _.union(webpackBase.module.rules, [
-  {
-    test: /\.scss$|\.sass|\.css$/,
-    loader: ExtractTextPlugin.extract({ fallbackLoader: "style-loader", loader: sassLoaders.join('!') })
-  }
-]);
-
-webpackProd.plugins = _.union(webpackBase.plugins, [
-  new ExtractTextPlugin({ filename: '[name].[hash].css', allChunks: false }),
-  new webpack.optimize.UglifyJsPlugin({
-    minimize: true,
-    compress:{
-      warnings: true
-    }
-  }),
-  new webpack.DefinePlugin({
-    'process.env':{
-      'NODE_ENV': JSON.stringify('production')
-    }
-  })
-]);
-
-module.exports = webpackProd;
+module.exports = webpackProd
